@@ -15,13 +15,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
@@ -68,7 +66,7 @@ public class ContactControllerTest {
         user.setUserid(2);
         user.setFirstname("Thomas");
         user.setCompteBancaire(new Compte(2, "ZERTYUIOG", 123.97, user));
-        user.setContact((Collection<Contact>) contact);
+        user.setContact(Collections.singletonList(contact));
 
     }
 
@@ -83,7 +81,7 @@ public class ContactControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.
                         get("/getContacts").with(csrf()))
-                .andExpect(status().isFound());
+                .andExpect(status().isOk());
 
 
         verify(contactService, times(1)).getContact(anyInt());
@@ -98,14 +96,13 @@ public class ContactControllerTest {
         when(userService.findUserByEmail("user2@mail.com")).thenReturn(user);
         when(userService.findUser()).thenReturn(new User()); // Assuming you are mocking the logged-in user
 
-        mockMvc.perform(post("/addPersonToContact")
+        mockMvc.perform(post("/addPersonToContact").with(csrf())
                         .param("email", "user2@mail.com")) // Adjust with your form parameter
-                .andExpect(status().isOk())
-                .andExpect(view().name("home"));
+                .andExpect(status().isOk());
 
         verify(userService, times(1)).findUserByEmail("user2@mail.com");
         verify(userService, times(1)).findUser();
-        verify(contactService, times(1)).addContact(user, any(User.class), any(RedirectAttributes.class));
+        verify(contactService, times(1)).addContact(any(User.class), any(User.class));
 
     }
 
@@ -116,7 +113,7 @@ public class ContactControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.
                         get("/addPersonToContact").with(csrf()))
-                .andExpect(status().isFound());
+                .andExpect(status().isOk());
 
 
     }

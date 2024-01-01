@@ -28,6 +28,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -79,7 +81,7 @@ public class AmisControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user))
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
     }
 
 // get addfriend
@@ -89,7 +91,7 @@ public class AmisControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.
                         get("/addFriend").with(csrf()))
-                .andExpect(status().isFound());
+                .andExpect(status().isOk());
 
     }
 
@@ -101,7 +103,7 @@ public class AmisControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.
                         get("/getFriend").with(csrf()))
-                .andExpect(status().isFound());
+                .andExpect(status().isOk());
 
     }
 

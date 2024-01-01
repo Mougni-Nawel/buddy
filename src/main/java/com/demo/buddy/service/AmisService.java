@@ -57,7 +57,8 @@ public class AmisService implements IAmisService{
     }
 
     public boolean addFriend(User userFind, User userId){
-        if(userFind != null && !Objects.equals(userFind.getUserid(), userId.getUserid()) && contactService.checkIsContact(userFind.getUserid())){
+        System.out.println("Ami is contact : "+ contactService.checkIsContact(userId.getUserid()));
+        if(userFind != null && !Objects.equals(userFind.getUserid(), userId.getUserid()) && contactService.checkIsContact(userId.getUserid())){
 
             Amis newAmi = new Amis();
             newAmi.setIdUser(userId.getUserid());

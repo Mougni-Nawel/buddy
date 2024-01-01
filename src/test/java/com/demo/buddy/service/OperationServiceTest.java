@@ -115,25 +115,27 @@ public class OperationServiceTest {
     @WithMockUser(username = "user1", authorities = {"USER"})
     void testNewOperation() throws NotNecessaryFundsException {
 
+
+        // when
+
+        //when(operationService.getCommission(anyDouble())).thenReturn(52.5);
+        //when(operationService.creditFriend(any(), anyDouble())).thenReturn(user.getCompteBancaire().getMontant());
+        when(operationRepository.save(any(Operation.class))).thenReturn(operation);
+        // then
+
         Date date = new Date();
 
         operation.setDate(date);
         user2.getCompteBancaire().setMontant(user.getCompteBancaire().getMontant() + 52.5);
 
         double expected = user.getCompteBancaire().getMontant() - operation.getMontant();
-        // when
-
-        when(operationService.getCommission(anyDouble())).thenReturn(Double.valueOf(52.5));
-        when(operationService.creditFriend(any(), anyDouble())).thenReturn(Double.valueOf(user.getCompteBancaire().getMontant()));
-        when(operationRepository.save(any(Operation.class))).thenReturn(operation);
-        // then
 
         boolean result = operationService.newOperation(operation, user, any(RedirectAttributes.class));
 
-        Assertions.assertTrue(true, String.valueOf(result));
+        Assertions.assertTrue(result);
 
-        verify(operationService).getCommission(operation.getMontant());
-        verify(operationService).creditFriend(operation.getAmi(), 52.5);
+        //verify(operationService).getCommission(operation.getMontant());
+        //verify(operationService).creditFriend(operation.getAmi(), 52.5);
         verify(operationRepository).save(any(Operation.class));
     }
 

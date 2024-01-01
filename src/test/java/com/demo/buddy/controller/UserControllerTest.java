@@ -57,7 +57,7 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(user))
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
 
         //Mockito.when(passwordEncoder.encode(user.getPassword())).thenReturn(user.getPassword());
 

@@ -13,6 +13,6 @@ public interface IContactService {
 
     Boolean checkIsContact(int userId);
 
-    void addContact(User userFind, User userId, RedirectAttributes redirect) throws UserException;
+    void addContact(User userFind, User userId) throws UserException;
 
 }

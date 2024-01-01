@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -51,7 +52,7 @@ public class ContactController {
 
         User userFind = userService.findUserByEmail(user.getEmail());
         //Optional<Amis> findAmi =  amisService.findAmiById(userFind.getUserid());
-        contactService.addContact(userFind, userService.findUser(), redirect);
+        contactService.addContact(userFind, userService.findUser());
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", "/home");
@@ -69,15 +70,5 @@ public class ContactController {
 
 
     }
-//    @PostMapping("/addPersonToContact")
-//    public String addFriend(@ModelAttribute User user, Model model, RedirectAttributes redirect){
-//
-//
-//        User userFind = userService.findUserByEmail(user.getEmail());
-//        //Optional<Amis> findAmi =  amisService.findAmiById(userFind.getUserid());
-//        contactService.addFriend(userFind, userService.findIdUserLogged());
-//
-//        return "home";
-//    }
 
 }

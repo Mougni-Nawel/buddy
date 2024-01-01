@@ -32,7 +32,7 @@ public class ControllerExceptionsHandler {
                 new Date(),
                 e.getMessage());
         log.error(e.getMessage());
-
+        // creer un flash erreur
         return new ResponseEntity<ErrorMessage>(message, HttpStatus.NOT_ACCEPTABLE);
     }
 

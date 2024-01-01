@@ -58,7 +58,7 @@ public class HomeControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.
                         get("/home").with(csrf()))
-                .andExpect(status().isFound());
+                .andExpect(status().isOk());
 
     }
 

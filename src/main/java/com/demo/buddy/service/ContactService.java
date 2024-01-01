@@ -42,11 +42,25 @@ public class ContactService implements IContactService{
 
     public Boolean checkIsContact(int userId) {
         Contact contact = contactRepository.findContactByIdPerson(userId);
+        if(contact != null) {
+            System.out.println("VOILA LE CONTACT : "+contact.getUser());
+
+
+            if (contact.getUser().getUserid() == userService.findIdUserLogged()) {
+                System.out.println("VOILA LE CONTACT : " + contact.getUser());
+                return false;
+            }
+
+            if(contact.getAmiID() == userId){
+                return true;
+            }
+        }
         return contact != null;
     }
 
-    public void addContact(User userFind, User userId, RedirectAttributes redirectAttributes) throws UserException {
-        if(userFind != null && !Objects.equals(userFind.getUserid(), userId)){
+    public void addContact(User userFind, User userId) throws UserException {
+
+        if(userFind != null && !Objects.equals(userFind.getUserid(), userId) && !checkIsContact(userFind.getUserid())){
 
             Contact newAmi = new Contact();
             newAmi.setUser(userId);
@@ -59,8 +73,9 @@ public class ContactService implements IContactService{
             contactRepository.save(newAmi);
             contactRepository.save(newContactForAmi);
         }else{
+            // todo else avant quand user est deha en contact throw an exception
             //todo ajouter un message d'erreur et une exception pour user pas trouve
-            redirectAttributes.addFlashAttribute("errorMessage", "User not found");
+            //redirectAttributes.addFlashAttribute("errorMessage", "User not found");
             throw new UserException("User not found");
         }
     }
