@@ -4,6 +4,8 @@ import com.demo.buddy.controller.exception.NotNecessaryFundsException;
 import com.demo.buddy.entity.Compte;
 import com.demo.buddy.entity.Operation;
 import com.demo.buddy.entity.User;
+import com.demo.buddy.repository.AmisRepository;
+import com.demo.buddy.service.AmisService;
 import com.demo.buddy.service.IOperationService;
 import com.demo.buddy.service.IUserService;
 import com.demo.buddy.service.OperationService;
@@ -15,8 +17,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,11 +40,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc
-@EnableWebMvc
-@SpringBootTest(properties = "spring.main.lazy-initialization=true",classes = OperationController.class)
+/**
+ * test: save a transaction
+ * @author Mougni
+ *
+ */
+//@AutoConfigureMockMvc
 @WithMockUser
-//@Transactional
+@WebMvcTest(OperationController.class)
+//@ComponentScan(basePackageClasses = {AmisService.class})
 @Slf4j
 public class OperationControllerTest {
 
@@ -53,6 +61,8 @@ public class OperationControllerTest {
     @MockBean
     private IUserService userService;
 
+    @MockBean
+    private AmisRepository amisRepository;
     private Operation operation;
 
     private User debiteur;
@@ -82,7 +92,7 @@ public class OperationControllerTest {
         operation.setDate(date);
 
         when(userService.findUser()).thenReturn(user);
-        when(operationService.newOperation(any(Operation.class), any(User.class), any(RedirectAttributes.class))).thenReturn(true);
+        when(operationService.newOperation(any(Operation.class), any(User.class))).thenReturn(true);
 
         mockMvc.perform(post("/newTransaction").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -120,7 +130,7 @@ public class OperationControllerTest {
         Date date = new Date();
         operation.setDate(date);
 
-        when(operationService.newOperation(any(), any(), any())).thenThrow(new NotNecessaryFundsException("Pas assez d'argent"));
+        when(operationService.newOperation(any(), any())).thenThrow(new NotNecessaryFundsException("Pas assez d'argent"));
 
         mockMvc.perform(post("/newTransaction").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)

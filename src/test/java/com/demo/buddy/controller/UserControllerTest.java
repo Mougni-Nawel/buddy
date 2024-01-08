@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -21,9 +22,15 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * test: register a user, show view
+ * @author Mougni
+ *
+ */
 @AutoConfigureMockMvc
 @EnableWebMvc
-@SpringBootTest(classes = UserController.class)
+//@SpringBootTest(classes = UserController.class)
+@WebMvcTest
 @WithMockUser
 @Slf4j
 public class UserControllerTest {
@@ -35,6 +42,12 @@ public class UserControllerTest {
 
     @MockBean
     private IUserService userService;
+
+    @MockBean
+    private IAmisService amisService;
+
+    @MockBean
+    private IOperationService operationService;
 
     @BeforeEach
     public void setUpPerTest(){

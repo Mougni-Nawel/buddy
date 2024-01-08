@@ -24,7 +24,8 @@ import java.util.List;
 
 
 
-@SpringBootApplication()
+//@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.demo.buddy")
 public class BuddyApplication {
 
 

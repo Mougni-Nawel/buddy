@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
 import com.demo.buddy.service.IAmisService;
+import com.demo.buddy.service.IOperationService;
 import com.demo.buddy.service.IUserService;
 import com.demo.buddy.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,9 +37,15 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+/**
+ * test: get friend and save friend.
+ * @author Mougni
+ *
+ */
 @AutoConfigureMockMvc
 @EnableWebMvc
-@SpringBootTest(properties = "spring.main.lazy-initialization=true",classes = AmisController.class)
+//@SpringBootTest(properties = "spring.main.lazy-initialization=true",classes = AmisController.class)
+@WebMvcTest
 @WithMockUser
 @Slf4j
 public class AmisControllerTest {
@@ -50,6 +57,10 @@ public class AmisControllerTest {
 
     @MockBean
     private IUserService userService;
+
+    @MockBean
+    private IOperationService operationService;
+
 
     @MockBean
     private IAmisService amisService;

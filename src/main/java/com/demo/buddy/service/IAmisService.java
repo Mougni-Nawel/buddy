@@ -1,5 +1,6 @@
 package com.demo.buddy.service;
 
+import com.demo.buddy.controller.exception.UserException;
 import com.demo.buddy.entity.User;
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,9 @@ public interface IAmisService {
 
     List<Optional<User>> findAmi();
 
-    boolean addFriend(User userFind, User userId);
+    Boolean checkIsAmis(int userId) throws UserException;
+
+    boolean addFriend(User userFind, User userId) throws UserException;
 
     List<Optional<User>> findAmisByIdUser(int userId);
 

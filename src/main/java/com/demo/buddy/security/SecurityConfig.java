@@ -40,12 +40,12 @@ public class SecurityConfig {
                                         .defaultSuccessUrl("/home", true)
                                         .failureUrl("/login?error")
                                         .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error")
-                                        );
-                                        //.and()
-                                        //.oauth2Login()
-                                            //  .loginPage("/login/github")
-                                        //.redirectionEndpoint()
-                                        //.baseUri("/login/oauth2/callback/*");
+                                        )
+                                        .and()
+                                        .oauth2Login()
+                                              .loginPage("/login/github")
+                                        .redirectionEndpoint()
+                                        .baseUri("/login/oauth2/callback/*");
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }

@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * methods related to the controller of home
+ * @author Mougni
+ *
+ */
 @Controller
 public class HomeController {
 
@@ -28,6 +33,11 @@ public class HomeController {
     IOperationService operationService;
 
 
+    /**
+     * this method get the view home from the path /home
+     * @param model is used as a parameter to pass to the view all the friends and the transactions that had been made by the person.
+     * @return the view home.
+     */
     @GetMapping("/home")
     public String home(Model model) {
 
@@ -35,13 +45,9 @@ public class HomeController {
 
         model.addAttribute("amisInfo", amisInfos);
 
-        // get all transactions
-
         List<Operation> operationsList = operationService.findTransactionsMadeByUser(userService.findIdUserLogged());
         model.addAttribute("transactions", operationsList);
 
-        //HttpHeaders headers = new HttpHeaders();
-        //headers.add("Location", "/home");
         return "home";
 
     }

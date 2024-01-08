@@ -17,6 +17,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * methods related to user that are implemented from user interface.
+ * @author Mougni
+ *
+ */
 @Service
 @Slf4j
 public class UserService implements UserDetailsService, IUserService {
@@ -27,6 +32,11 @@ public class UserService implements UserDetailsService, IUserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    /**
+     * this method save in db the user that is put in parameter.
+     * @param newUser represents the user that has to be saved.
+     * @throws UserException if the user already exist.
+     */
     public void saveUser(User newUser) throws UserException {
         log.debug("EMAIL : "+newUser.getEmail());
         User existingUser = userRepository.findByEmail(newUser.getEmail());
@@ -59,19 +69,16 @@ public class UserService implements UserDetailsService, IUserService {
 
     }
 
+    /**
+     * this method modify the user info.
+     * @param updateUserInfo represents the user new infos.
+     * @return user udpated.
+     */
     public User updateUser(User updateUserInfo){
         User actualUserInfo = findUser();
-        //User actualUserInfo = findUser();
-
-        // creer d'abord un compte lors de la création de compte
-        //Optional<Compte> compte = compteRepository.findById(1);
-        //System.out.println(compte.get());
         if((actualUserInfo.getCompteBancaire().getCoordonneesBancaire() == null) ||(actualUserInfo.getCompteBancaire().getCoordonneesBancaire().isEmpty() || (actualUserInfo.getCompteBancaire().getCoordonneesBancaire() != updateUserInfo.getCompteBancaire().getCoordonneesBancaire()))){
             actualUserInfo.getCompteBancaire().setCoordonneesBancaire(updateUserInfo.getCompteBancaire().getCoordonneesBancaire());
         }
-
-        //compteRepository.save(compte.get());
-
 
         if (actualUserInfo.getEmail() != updateUserInfo.getEmail()) {
             actualUserInfo.setEmail(updateUserInfo.getEmail());
@@ -81,6 +88,11 @@ public class UserService implements UserDetailsService, IUserService {
         return userRepository.save(actualUserInfo);
     }
 
+
+    /**
+     * this method modify the user account info.
+     * @param account represents the user account new infos.
+     */
     public void updateAccount(User account){
         User user = findUser();
 
@@ -90,20 +102,28 @@ public class UserService implements UserDetailsService, IUserService {
         userRepository.save(user);
     }
 
+    /**
+     * this method get qa user by email that is put in parameter.
+     * @param username represents the email of a user.
+     * @return user that is of type {@link User}.
+     * @throws UsernameNotFoundException if any user is found with this email.
+     */
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
 
         User user = userRepository.findByEmail(username);
 
         if(user == null){
-            System.out.println("PAS TROUVE");
-            throw new UsernameNotFoundException("pas trouve");
+            throw new UsernameNotFoundException("Pas trouve");
         }
-        System.out.println("TROUVE");
         return user;
 
     }
 
+    /**
+     * this method get the user id that is logged.
+     * @return userId that is of type {@link Integer}.
+     */
     public int findIdUserLogged() {
         SecurityContext context= SecurityContextHolder.getContext();
         Authentication authentication=context.getAuthentication();
@@ -112,6 +132,10 @@ public class UserService implements UserDetailsService, IUserService {
         return userId;
     }
 
+    /**
+     * this method get a user.
+     * @return user that is of type {@link User}.
+     */
     public User findUser() {
 
         // todo return exception
@@ -119,10 +143,20 @@ public class UserService implements UserDetailsService, IUserService {
 
     }
 
+    /**
+     * this method get a user from an id.
+     * @param userid is the id of the user that we search.
+     * @return user.
+     */
     public Optional<User> findById(int userid){
         return Optional.ofNullable(userRepository.findById(userid));
     }
 
+    /**
+     * this method get a user from an email.
+     * @param email is the eamil of the user that we search.
+     * @return user.
+     */
     public User findUserByEmail(String email) {
 
         return userRepository.findByEmail(email);

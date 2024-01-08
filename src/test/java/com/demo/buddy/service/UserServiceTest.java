@@ -27,6 +27,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+/**
+ * test: save a new user, save a user that already exist, update a user, find a user.
+ * @author Mougni
+ *
+ */
 @SpringBootTest(classes = IUserService.class)
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
@@ -210,9 +215,8 @@ public class UserServiceTest {
         assertEquals(user, result);
     }
 
-    // todo add findUser of user not found
 
-   // @Test
+   //@Test
     @WithMockUser(username = "user1", authorities = {"USER"})
     void testFindById() {
 

@@ -11,9 +11,9 @@ public interface IOperationService {
 
     List<Operation> findTransactionsMadeByUser(int user);
 
-    boolean newOperation(Operation operation, User user, RedirectAttributes redirectAttributes) throws NotNecessaryFundsException;
+    boolean newOperation(Operation operation, User user) throws NotNecessaryFundsException;
 
-    double getCommission(double montant);
+    double getCommission(Operation operation);
 
     double creditFriend(User user, double montant);
 

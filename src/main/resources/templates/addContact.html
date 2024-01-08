@@ -1,149 +1,149 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="eng">
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-          crossorigin="anonymous">
-    <style>
-        * {box-sizing: border-box;}
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org" lang="eng">-->
+<!--<head>-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
+<!--    <link rel="stylesheet"-->
+<!--          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"-->
+<!--          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"-->
+<!--          crossorigin="anonymous">-->
+<!--    <style>-->
+<!--        * {box-sizing: border-box;}-->
 
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+<!--        body {-->
+<!--            margin: 0;-->
+<!--            font-family: Arial, Helvetica, sans-serif;-->
+<!--        }-->
 
-        .header {
-            overflow: hidden;
-            background-color: #f1f1f1;
-            padding: 20px 10px;
-        }
+<!--        .header {-->
+<!--            overflow: hidden;-->
+<!--            background-color: #f1f1f1;-->
+<!--            padding: 20px 10px;-->
+<!--        }-->
 
-        .header a {
-            float: left;
-            color: black;
-            text-align: center;
-            padding: 12px;
-            text-decoration: none;
-            font-size: 18px;
-            line-height: 25px;
-            border-radius: 4px;
-        }
+<!--        .header a {-->
+<!--            float: left;-->
+<!--            color: black;-->
+<!--            text-align: center;-->
+<!--            padding: 12px;-->
+<!--            text-decoration: none;-->
+<!--            font-size: 18px;-->
+<!--            line-height: 25px;-->
+<!--            border-radius: 4px;-->
+<!--        }-->
 
-        .header a.logo {
-            font-size: 25px;
-            font-weight: bold;
-        }
+<!--        .header a.logo {-->
+<!--            font-size: 25px;-->
+<!--            font-weight: bold;-->
+<!--        }-->
 
-        .header a:hover {
-            background-color: #ddd;
-            color: black;
-        }
+<!--        .header a:hover {-->
+<!--            background-color: #ddd;-->
+<!--            color: black;-->
+<!--        }-->
 
-        .header a.active {
-            background-color: dodgerblue;
-            color: white;
-        }
+<!--        .header a.active {-->
+<!--            background-color: dodgerblue;-->
+<!--            color: white;-->
+<!--        }-->
 
-        .header-right {
-            float: right;
-        }
+<!--        .header-right {-->
+<!--            float: right;-->
+<!--        }-->
 
-        @media screen and (max-width: 500px) {
-            .header a {
-                float: none;
-                display: block;
-                text-align: left;
-            }
+<!--        @media screen and (max-width: 500px) {-->
+<!--            .header a {-->
+<!--                float: none;-->
+<!--                display: block;-->
+<!--                text-align: left;-->
+<!--            }-->
 
-            .header-right {
-                float: none;
-            }
-        }
+<!--            .header-right {-->
+<!--                float: none;-->
+<!--            }-->
+<!--        }-->
 
-        /*Css pour le tableau de transfert*/
-        #customers {
-            font-family: Arial, Helvetica, sans-serif;
-            margin-left: auto;
-            margin-right: auto;
-            border-collapse: collapse;
-            width: 80%;
-            border: 2px solid;
-        }
+<!--        /*Css pour le tableau de transfert*/-->
+<!--        #customers {-->
+<!--            font-family: Arial, Helvetica, sans-serif;-->
+<!--            margin-left: auto;-->
+<!--            margin-right: auto;-->
+<!--            border-collapse: collapse;-->
+<!--            width: 80%;-->
+<!--            border: 2px solid;-->
+<!--        }-->
 
-        #customers td {
+<!--        #customers td {-->
 
-            padding: 15px;
-            padding-top: 40px;
-            padding-bottom: 40px;
-            text-align: center;
-        }
+<!--            padding: 15px;-->
+<!--            padding-top: 40px;-->
+<!--            padding-bottom: 40px;-->
+<!--            text-align: center;-->
+<!--        }-->
 
-        #customers tr:nth-child(even){background-color: #f2f2f2;}
+<!--        #customers tr:nth-child(even){background-color: #f2f2f2;}-->
 
-        #customers tr:hover {background-color: #ddd;}
+<!--        #customers tr:hover {background-color: #ddd;}-->
 
-        #customers th {
-            padding: 15px;
-            padding-top: 40px;
-            padding-bottom: 40px;
-            text-align: center;
-            background-color: #04AA6D;
-            color: white;
-        }
+<!--        #customers th {-->
+<!--            padding: 15px;-->
+<!--            padding-top: 40px;-->
+<!--            padding-bottom: 40px;-->
+<!--            text-align: center;-->
+<!--            background-color: #04AA6D;-->
+<!--            color: white;-->
+<!--        }-->
 
-        h3{
-            margin-left: 10%;
-        }
+<!--        h3{-->
+<!--            margin-left: 10%;-->
+<!--        }-->
 
-        #info {
-            font-family: Arial, Helvetica, sans-serif;
-            margin-left: 30%;
-            margin-right: 20%;
-            width: 40%;
-            border: 2px solid;
-            background-color: #f2f2f2;
-            height: 20em;
-
-
-        }
-
-        #button {
-            margin: 0;
-            position: absolute;
-            top: 30%;
-            left: 50%;
-            -ms-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-        }
-    </style>
-</head>
-<body>
-
-<div class="header">
-    <button type="button" class="btn btn-lg" style="background-color: #6cbc56; color:white">Pay My Buddy</button>
-    <div class="header-right">
-        <a class="" href="/home">Home</a>
-        <a href="#contact">Transfer</a>
-        <a href="/profile">Mes infos</a>
-        <a href="/getFriend">Mes amis</a>
-        <a href="/getContacts">Contact</a>
-        <a href="/logout">Log off</a>
-    </div>
-</div>
+<!--        #info {-->
+<!--            font-family: Arial, Helvetica, sans-serif;-->
+<!--            margin-left: 30%;-->
+<!--            margin-right: 20%;-->
+<!--            width: 40%;-->
+<!--            border: 2px solid;-->
+<!--            background-color: #f2f2f2;-->
+<!--            height: 20em;-->
 
 
-<div id="info">
-    <h1 style="text-align: center; color: black; margin-top: 20px; margin-bottom: 20px;">Add Contact : </h1>
-    <form method="post" th:action="@{/addPersonToContact}" th:object="${user}" enctype="UTF8">
-        <div style="margin-left: auto; margin-right: auto; width: 50%; text-align: left;">
-        <label style="margin-left: 0;">Email</label>
-            <input type="email" th:field="*{email}" name="email" style="width: 100%;">
-        </div>
-        <button type="submit" class="btn btn-lg" id="button" style="background-color: #6cbc56; color:white; margin-top:4em;">Add</button>
+<!--        }-->
 
-    </form>
-</div>
-</body>
-</html>
+<!--        #button {-->
+<!--            margin: 0;-->
+<!--            position: absolute;-->
+<!--            top: 30%;-->
+<!--            left: 50%;-->
+<!--            -ms-transform: translate(-50%, -50%);-->
+<!--            transform: translate(-50%, -50%);-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div class="header">-->
+<!--    <button type="button" class="btn btn-lg" style="background-color: #6cbc56; color:white">Pay My Buddy</button>-->
+<!--    <div class="header-right">-->
+<!--        <a class="" href="/home">Home</a>-->
+<!--        <a href="#contact">Transfer</a>-->
+<!--        <a href="/profile">Mes infos</a>-->
+<!--        <a href="/getFriend">Mes amis</a>-->
+<!--        <a href="/getContacts">Contact</a>-->
+<!--        <a href="/logout">Log off</a>-->
+<!--    </div>-->
+<!--</div>-->
+
+
+<!--<div id="info">-->
+<!--    <h1 style="text-align: center; color: black; margin-top: 20px; margin-bottom: 20px;">Add Contact : </h1>-->
+<!--    <form method="post" th:action="@{/addPersonToContact}" th:object="${user}" enctype="UTF8">-->
+<!--        <div style="margin-left: auto; margin-right: auto; width: 50%; text-align: left;">-->
+<!--        <label style="margin-left: 0;">Email</label>-->
+<!--            <input type="email" th:field="*{email}" name="email" style="width: 100%;">-->
+<!--        </div>-->
+<!--        <button type="submit" class="btn btn-lg" id="button" style="background-color: #6cbc56; color:white; margin-top:4em;">Add</button>-->
+
+<!--    </form>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
