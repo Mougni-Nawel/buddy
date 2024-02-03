@@ -15,6 +15,6 @@ public interface OperationRepository extends JpaRepository<Operation, Integer> {
     List<Operation> findAllByUser(int userId);
 
     @Query("SELECT MAX(o.numeroTransaction) FROM Operation o")
-    int getNextTransactionNumber();
+    Integer getNextTransactionNumber();
 
 }

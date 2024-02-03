@@ -64,7 +64,7 @@ public class AmisController {
         User userFind = userService.findUserByEmail(user.getEmail());
         amisService.addFriend(userFind, userService.findUser());
 
-        return "home";
+        return "redirect:/home";
 
     }
 

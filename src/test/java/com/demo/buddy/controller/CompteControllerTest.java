@@ -80,7 +80,7 @@ public class CompteControllerTest {
         Assertions.assertEquals("user1@mail.com", result.getEmail());
 
         mockMvc.perform(MockMvcRequestBuilders.post("/updateUserInfo").with(csrf()))
-                .andExpect(status().isOk());
+                .andExpect(status().isFound());
     }
 
     @Test
@@ -98,7 +98,7 @@ public class CompteControllerTest {
         userService.updateUser(user);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/updateAccount").with(csrf()))
-                .andExpect(status().isOk());
+                .andExpect(status().isFound());
     }
 
 }

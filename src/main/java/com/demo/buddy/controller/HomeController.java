@@ -41,12 +41,18 @@ public class HomeController {
     @GetMapping("/home")
     public String home(Model model) {
 
-        List<Optional<User>> amisInfos = amisService.findAmi();
 
+        List<Optional<User>> amisInfos = amisService.findAmi();
+        if(amisInfos == null){
+            return "redirect:/profile";
+        }
         model.addAttribute("amisInfo", amisInfos);
+
+
 
         List<Operation> operationsList = operationService.findTransactionsMadeByUser(userService.findIdUserLogged());
         model.addAttribute("transactions", operationsList);
+
 
         return "home";
 

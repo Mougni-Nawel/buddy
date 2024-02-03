@@ -62,4 +62,9 @@ public class UserController {
 
     }
 
+    @GetMapping("/")
+    public String getGitHub() {
+        return "redirect:/home";
+    }
+
 }

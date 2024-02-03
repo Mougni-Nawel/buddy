@@ -3,6 +3,7 @@ package com.demo.buddy.controller;
 import com.demo.buddy.controller.exception.NotNecessaryFundsException;
 import com.demo.buddy.entity.Compte;
 import com.demo.buddy.entity.Operation;
+import com.demo.buddy.entity.Role;
 import com.demo.buddy.entity.User;
 import com.demo.buddy.repository.AmisRepository;
 import com.demo.buddy.service.AmisService;
@@ -45,10 +46,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Mougni
  *
  */
-//@AutoConfigureMockMvc
 @WithMockUser
 @WebMvcTest(OperationController.class)
-//@ComponentScan(basePackageClasses = {AmisService.class})
 @Slf4j
 public class OperationControllerTest {
 
@@ -72,8 +71,6 @@ public class OperationControllerTest {
         operation = new Operation();
     }
 
-
-    // okay operation
     @Test
     @WithMockUser(username = "spring", password = "secret")
     public void givenOperation_whenCreateOperation_then202IsReceived() throws Exception {
@@ -83,7 +80,7 @@ public class OperationControllerTest {
         user.setMdp("mdp10203");
         user.setFirstname("Test");
         user.setLastname("Test");
-        user.setRole("USER");
+        user.setRole(Role.USER_GITHUB);
 
         operation.setAmi(user);
         operation.setMontant(129.00);
@@ -98,91 +95,11 @@ public class OperationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(operation))
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isFound());
 
 
     }
 
-    // bad operation
-    //@Test
-    @WithMockUser(username = "spring", password = "secret")
-    void givenOperation_whenCreateOperation_then404IsReceived() throws Exception {
-        // Your test setup code...
-        setUpPerTest();
-        User user = new User();
-        user.setEmail("test1@test.com");
-        user.setMdp("mdp10203");
-        user.setFirstname("Test");
-        user.setLastname("Test");
-        user.setRole("USER");
-
-        debiteur = new User();
-        debiteur.setEmail("debiteur@gmail.com");
-        debiteur.setMdp("mdp0192");
-        debiteur.setRole("USER");
-        debiteur.setLastname("Debiteur");
-        debiteur.setFirstname("Henry");
-        debiteur.setCompteBancaire(new Compte(1, "ZERTYUI2763", 120.99, debiteur));
-
-        operation.setAmi(user);
-        operation.setMontant(129.00);
-
-        Date date = new Date();
-        operation.setDate(date);
-
-        when(operationService.newOperation(any(), any())).thenThrow(new NotNecessaryFundsException("Pas assez d'argent"));
-
-        mockMvc.perform(post("/newTransaction").with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(operation)))
-                .andExpect(status().isNotFound())
-                .andExpect(content().string("Pas assez d'argent"));
-
-        // Additional assertions or verifications as needed...
-    }
-
-
-
-//    public void givenOperation_whenCreateOperation_then404IsReceived() throws Exception {
-//        setUpPerTest();
-//        User user = new User();
-//        user.setEmail("test1@test.com");
-//        user.setMdp("mdp10203");
-//        user.setFirstname("Test");
-//        user.setLastname("Test");
-//        user.setRole("USER");
-//
-//        debiteur = new User();
-//        debiteur.setEmail("debiteur@gmail.com");
-//        debiteur.setMdp("mdp0192");
-//        debiteur.setRole("USER");
-//        debiteur.setLastname("Debiteur");
-//        debiteur.setFirstname("Henry");
-//        debiteur.setCompteBancaire(new Compte(1, "ZERTYUI2763", 120.99, debiteur));
-//
-//        operation.setAmi(user);
-//        operation.setMontant(129.00);
-//
-//        Date date = new Date();
-//        operation.setDate(date);
-//
-//        doThrow(new NotNecessaryFundsException("Pas assez d'argent"))
-//                .when(operationService)
-//                .newOperation(any(Operation.class), any(User.class), any(RedirectAttributes.class));
-//
-//
-//        Assertions.assertThatThrownBy(() ->
-//                mockMvc.perform(MockMvcRequestBuilders
-//                                .post("/newTransaction").with(csrf())
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                                .content(asJsonString(operation))
-//                                .accept(MediaType.APPLICATION_JSON))
-//                        .andExpect(status().isNotFound())
-//                        .andDo(print()))
-//                .hasCause(new NotNecessaryFundsException("Pas assez d'argent"));
-//
-//
-//    }
 
 
     public static String asJsonString(final Object obj) {

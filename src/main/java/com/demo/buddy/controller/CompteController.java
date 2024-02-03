@@ -2,17 +2,12 @@ package com.demo.buddy.controller;
 
 import com.demo.buddy.entity.User;
 import com.demo.buddy.service.IUserService;
-import com.demo.buddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * methods related to the controller of compte
@@ -37,7 +32,7 @@ public class CompteController {
         model.addAttribute("updateUserInfo", user);
         userService.updateUser(user);
 
-        return "/home";
+        return "redirect:/home";
 
 
     }
@@ -54,7 +49,7 @@ public class CompteController {
 
         model.addAttribute("user", userConnected);
 
-        return "login";
+        return "accountInfo";
 
 
     }
@@ -85,7 +80,7 @@ public class CompteController {
 
         userService.updateAccount(user);
 
-        return "home";
+        return "redirect:/home";
 
 
     }

@@ -1,6 +1,7 @@
 package com.demo.buddy.service;
 
 import com.demo.buddy.entity.Compte;
+import com.demo.buddy.entity.Role;
 import com.demo.buddy.entity.User;
 import com.demo.buddy.repository.CompteRepository;
 import org.springframework.beans.factory.annotation.Autowired;

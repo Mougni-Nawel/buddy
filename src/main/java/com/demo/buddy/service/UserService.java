@@ -2,6 +2,7 @@ package com.demo.buddy.service;
 
 import com.demo.buddy.controller.exception.UserException;
 import com.demo.buddy.entity.Compte;
+import com.demo.buddy.entity.Role;
 import com.demo.buddy.entity.User;
 import com.demo.buddy.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,7 +51,7 @@ public class UserService implements UserDetailsService, IUserService {
             }
 
             newUser.setMdp(passwordEncoder.encode(newUser.getMdp()));
-            newUser.setRole("USER");
+            newUser.setRole(Role.USER);
             Compte compte = new Compte();
             compte.setUser(newUser);
             newUser.setCompteBancaire(compte);
@@ -75,6 +77,7 @@ public class UserService implements UserDetailsService, IUserService {
      * @return user udpated.
      */
     public User updateUser(User updateUserInfo){
+
         User actualUserInfo = findUser();
         if((actualUserInfo.getCompteBancaire().getCoordonneesBancaire() == null) ||(actualUserInfo.getCompteBancaire().getCoordonneesBancaire().isEmpty() || (actualUserInfo.getCompteBancaire().getCoordonneesBancaire() != updateUserInfo.getCompteBancaire().getCoordonneesBancaire()))){
             actualUserInfo.getCompteBancaire().setCoordonneesBancaire(updateUserInfo.getCompteBancaire().getCoordonneesBancaire());
@@ -83,6 +86,18 @@ public class UserService implements UserDetailsService, IUserService {
         if (actualUserInfo.getEmail() != updateUserInfo.getEmail()) {
             actualUserInfo.setEmail(updateUserInfo.getEmail());
         }
+
+        if(actualUserInfo.getRole() == Role.USER_GITHUB && (actualUserInfo.getFirstname() == null) || (actualUserInfo.getLastname() == null)) {
+            if(updateUserInfo.getFirstname() != null){
+                actualUserInfo.setFirstname(updateUserInfo.getFirstname());
+            }
+
+            if(updateUserInfo.getLastname() != null){
+                actualUserInfo.setLastname(updateUserInfo.getLastname());
+            }
+
+        }
+
 
 
         return userRepository.save(actualUserInfo);
@@ -98,6 +113,7 @@ public class UserService implements UserDetailsService, IUserService {
 
         double montant = user.getCompteBancaire().getMontant() + account.getCompteBancaire().getMontant();
         user.getCompteBancaire().setMontant(montant);
+
 
         userRepository.save(user);
     }
@@ -124,11 +140,18 @@ public class UserService implements UserDetailsService, IUserService {
      * this method get the user id that is logged.
      * @return userId that is of type {@link Integer}.
      */
-    public int findIdUserLogged() {
+    public int findIdUserLogged(){
         SecurityContext context= SecurityContextHolder.getContext();
-        Authentication authentication=context.getAuthentication();
-        int userId = ((User) authentication.getPrincipal()).getUserid();
+        Object authentication=context.getAuthentication().getPrincipal();
+        int userId = 0;
+        if (authentication instanceof User) {
 
+            userId = ((User) authentication).getUserid();
+        }else if(authentication instanceof DefaultOAuth2User){
+            Object username = ((DefaultOAuth2User)  authentication).getAttributes().get("login");
+            User userGit = this.findUserGit((String) username);
+            userId = userGit.getUserid();
+        }
         return userId;
     }
 
@@ -149,6 +172,7 @@ public class UserService implements UserDetailsService, IUserService {
      * @return user.
      */
     public Optional<User> findById(int userid){
+        //System.out.println("User login : "+Optional.ofNullable(userRepository.findById(userid)));
         return Optional.ofNullable(userRepository.findById(userid));
     }
 
@@ -162,5 +186,59 @@ public class UserService implements UserDetailsService, IUserService {
         return userRepository.findByEmail(email);
 
     }
+
+    // test github user connected
+    public User findUserGit(String username){
+
+        return userRepository.findByUsername(username);
+    }
+
+
+    public User saveUserGit(String username) {
+        User userGithub = this.findUserGit((String) username);
+        if (userGithub == null) {
+
+            User newUserGitHub = new User();
+
+            newUserGitHub.setRole(Role.USER_GITHUB);
+            newUserGitHub.setUsername(username);
+            Compte compte = new Compte();
+            compte.setUser(newUserGitHub);
+            newUserGitHub.setCompteBancaire(compte);
+
+            userRepository.save(newUserGitHub);
+
+        }
+
+        return userGithub;
+    }
+
+    @Override
+    public int getUserId(){
+        SecurityContext context= SecurityContextHolder.getContext();
+        Authentication authentication=context.getAuthentication();
+        int userId = 0;
+        if (authentication.getPrincipal() instanceof DefaultOAuth2User) {
+            DefaultOAuth2User oauth2User = (DefaultOAuth2User) authentication.getPrincipal();
+
+            String username = (String) oauth2User.getAttributes().get("login");
+            User userGit = findUserGit(username.toString());
+
+            User user = saveUserGit(username);
+
+            if(user == null){
+                return 0;
+            }
+
+            userId = user.getUserid();
+
+        }else if (authentication.getPrincipal() instanceof User) {
+            User user = (User) authentication.getPrincipal();
+            userId = ((User) authentication.getPrincipal()).getUserid();
+            System.out.println("User  : "+user.getEmail());
+        }
+        return userId;
+    }
+
 
 }

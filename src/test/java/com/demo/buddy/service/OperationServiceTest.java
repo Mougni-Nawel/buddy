@@ -123,13 +123,7 @@ public class OperationServiceTest {
     @WithMockUser(username = "user1", authorities = {"USER"})
     void testNewOperation() throws NotNecessaryFundsException {
 
-
-        // when
-
-        //when(operationService.getCommission(anyDouble())).thenReturn(52.5);
-        //when(operationService.creditFriend(any(), anyDouble())).thenReturn(user.getCompteBancaire().getMontant());
         when(operationRepository.save(any(Operation.class))).thenReturn(operation);
-        // then
 
         Date date = new Date();
 
@@ -142,8 +136,6 @@ public class OperationServiceTest {
 
         Assertions.assertTrue(result);
 
-        //verify(operationService).getCommission(operation.getMontant());
-        //verify(operationService).creditFriend(operation.getAmi(), 52.5);
         verify(operationRepository).save(any(Operation.class));
     }
 

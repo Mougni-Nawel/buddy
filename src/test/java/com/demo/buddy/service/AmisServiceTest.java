@@ -42,9 +42,6 @@ public class AmisServiceTest {
     @InjectMocks
     AmisService amisService;
 
-//    @Mock
-//    private ContactService contactService;
-
     private User userFind = new User();
     private User userId = new User();
 
@@ -63,7 +60,7 @@ public class AmisServiceTest {
 
     }
 
-    //@Test
+    @Test
     @WithMockUser(username = "user1", authorities = {"USER"})
     void testFindAmi() {
         // Mocking SecurityContext and Authentication
@@ -81,12 +78,14 @@ public class AmisServiceTest {
         Amis ami1 = new Amis();
         ami1.setIdAmis(2);
 
+
         Amis ami2 = new Amis();
         ami2.setIdAmis(3);
 
+        when(userService.getUserId()).thenReturn(1);
+
         when(amisRepository.findAmiByIdUser(1)).thenReturn(Arrays.asList(ami1, ami2));
 
-        // Mocking UserService findById calls
         User user2 = new User();
         user2.setUserid(2);
         when(userService.findById(2)).thenReturn(Optional.of(user2));
@@ -95,10 +94,8 @@ public class AmisServiceTest {
         user3.setUserid(3);
         when(userService.findById(3)).thenReturn(Optional.of(user3));
 
-        // Calling the method under test
         List<Optional<User>> result = amisService.findAmi();
 
-        // Verifying expected interactions
         verify(amisRepository, times(1)).findAmiByIdUser(1);
         verify(userService, times(1)).findById(2);
         verify(userService, times(1)).findById(3);
@@ -109,7 +106,7 @@ public class AmisServiceTest {
         assertEquals(Optional.of(user3), result.get(1));
     }
 
-//    @Test
+    @Test
     @WithMockUser(username = "user1", authorities = {"USER"})
     void testAddFriend() throws UserException {
 
@@ -123,7 +120,6 @@ public class AmisServiceTest {
         principalUser.setUserid(1);
         when(authentication.getPrincipal()).thenReturn(principalUser);
 
-        // service test
         User userFind = new User();
         userFind.setEmail("user1@mail.com");
         userFind.setUserid(1);
@@ -136,16 +132,9 @@ public class AmisServiceTest {
         userId.setFirstname("Thomas");
         userId.setCompteBancaire(new Compte(2, "ZERTYUIOG", 123.97, userId));
 
-        // when
-
-//        when(contactService.checkIsContact(userFind.getUserid())).thenReturn(true);
-
-
-        // then
-
         boolean result = amisService.addFriend(userFind, userId);
 
-        verify(amisRepository, Mockito.times(1)).save(any());
+        verify(amisRepository, Mockito.times(2)).save(any());
 
         assertTrue(result);
 
@@ -153,42 +142,28 @@ public class AmisServiceTest {
 
     }
 
-
-//    @Test
+    @Test
     @WithMockUser(username = "user1", authorities = {"USER"})
-    void testAddFriendFail() throws UserException {
+    void testCheckIsAmis() throws UserException {
 
         // authentication
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        SecurityContextHolder.setContext((org.springframework.security.core.context.SecurityContext) securityContext);
+        SecurityContextHolder.setContext(securityContext);
         Authentication authentication = Mockito.mock(Authentication.class);
-        when(((org.springframework.security.core.context.SecurityContext) securityContext).getAuthentication()).thenReturn(authentication);
+        when((securityContext).getAuthentication()).thenReturn(authentication);
 
-        User principalUser = new User();
-        principalUser.setUserid(1);
-        when(authentication.getPrincipal()).thenReturn(principalUser);
+        when(amisRepository.findContactByIdPerson(anyInt(), anyInt())).thenReturn(null);
 
-        // service test
-        setUp();
-        // when
+        boolean result = amisService.checkIsAmis(userFind.getUserid(), userId.getUserid());
 
-//        when(contactService.checkIsContact(userFind.getUserid())).thenReturn(false);
+        verify(amisRepository, Mockito.times(1)).findContactByIdPerson(anyInt(), anyInt());
 
-
-        // then
-
-        boolean result = amisService.addFriend(userFind, userId);
-
-        verify(amisRepository, Mockito.times(0)).save(any());
-
-        assertFalse(result);
-
+        assertTrue(result);
 
 
     }
 
-
-//    @Test
+    @Test
     @WithMockUser(username = "user1", authorities = {"USER"})
     void testFindAmisByIdUser() {
 
@@ -203,8 +178,6 @@ public class AmisServiceTest {
         principalUser.setUserid(1);
         when(authentication.getPrincipal()).thenReturn(principalUser);
 
-        // service test
-
         List<Amis> amiList = new ArrayList<>();
         Amis ami = new Amis();
         ami.setIdUser(userId.getUserid());
@@ -216,12 +189,8 @@ public class AmisServiceTest {
 
         amisInfos.add(Optional.ofNullable(userFind));
 
-        // when
-
         when(amisRepository.findAmiByIdUser(userId.getUserid())).thenReturn(amiList);
         when(userService.findById(ami.getIdAmis())).thenReturn(Optional.ofNullable(userFind));
-
-        // then
 
         List<Optional<User>> result = amisService.findAmisByIdUser(userId.getUserid());
 
@@ -236,7 +205,6 @@ public class AmisServiceTest {
     @WithMockUser(username = "user1", authorities = {"USER"})
     void testFindAmisByIdUserEmpty() {
 
-
         // authentication
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
         SecurityContextHolder.setContext((org.springframework.security.core.context.SecurityContext) securityContext);
@@ -247,18 +215,11 @@ public class AmisServiceTest {
         principalUser.setUserid(1);
         when(authentication.getPrincipal()).thenReturn(principalUser);
 
-        // service test
-
         List<Amis> amiList = new ArrayList<>();
 
         List<Optional<User>> amisInfos = new ArrayList<>();
 
-
-        // when
-
         when(amisRepository.findAmiByIdUser(userId.getUserid())).thenReturn(amiList);
-
-        // then
 
         List<Optional<User>> result = amisService.findAmisByIdUser(userId.getUserid());
 

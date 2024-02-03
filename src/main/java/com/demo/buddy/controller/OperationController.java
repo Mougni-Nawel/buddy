@@ -32,7 +32,7 @@ public class OperationController {
      * @param operation represent the operation that has to be created.
      * @return the view home.
      */
-    @ResponseStatus(HttpStatus.CREATED)
+    //@ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/newTransaction")
     public String newTransaction(@ModelAttribute Operation operation) throws NotNecessaryFundsException {
 

@@ -11,7 +11,7 @@ public interface IAmisService {
 
     List<Optional<User>> findAmi();
 
-    Boolean checkIsAmis(int userId) throws UserException;
+    Boolean checkIsAmis(int amiId, int userId) throws UserException;
 
     boolean addFriend(User userFind, User userId) throws UserException;
 

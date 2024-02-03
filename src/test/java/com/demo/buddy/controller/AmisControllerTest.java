@@ -1,6 +1,7 @@
 package com.demo.buddy.controller;
 
 import com.demo.buddy.entity.Amis;
+import com.demo.buddy.entity.Role;
 import com.demo.buddy.entity.User;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,7 +45,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @AutoConfigureMockMvc
 @EnableWebMvc
-//@SpringBootTest(properties = "spring.main.lazy-initialization=true",classes = AmisController.class)
 @WebMvcTest
 @WithMockUser
 @Slf4j
@@ -79,7 +79,7 @@ public class AmisControllerTest {
         user.setMdp("mdp10203");
         user.setFirstname("Test");
         user.setLastname("Test");
-        user.setRole("USER");
+        user.setRole(Role.USER);
 
         Mockito.when(userService.findUserByEmail(user.getEmail())).thenReturn(user).toString();
         Mockito.when(amisService.addFriend(any(User.class), any(User.class))).thenReturn(true);
@@ -92,7 +92,7 @@ public class AmisControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user))
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isFound());
     }
 
 // get addfriend

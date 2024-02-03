@@ -34,14 +34,16 @@ public class User implements UserDetails {
 
     private String lastname;
 
-    @NotNull
+    private String username;
+
+    //@NotNull
     @Email
     @Column(unique = true)
     private String email;
 
     private String mdp;
 
-    private String role;
+    private Role role;
 
     public User() {
 
@@ -100,6 +102,8 @@ public class User implements UserDetails {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "compte_id")
     private Compte compteBancaire;
+
+
 
 
 }

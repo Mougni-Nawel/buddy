@@ -24,7 +24,6 @@ public class Operation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
     private Integer numeroTransaction;
     private Date date;
     private double montant;

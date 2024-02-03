@@ -61,7 +61,13 @@ public class OperationService implements IOperationService{
             newOperation.setAmi(operation.getAmi());
             newOperation.setUser(user);
 
-            int nbTransaction = operationRepository.getNextTransactionNumber();
+            int nbTransaction;
+            Integer nextTransactionNumber = operationRepository.getNextTransactionNumber();
+            if(nextTransactionNumber == null || nextTransactionNumber == 0){
+                nbTransaction = 0;
+            }else{
+                nbTransaction = nextTransactionNumber;
+            }
             newOperation.setNumeroTransaction(nbTransaction + 1);
 
             double montantAfterCommission = getCommission(newOperation);
@@ -70,7 +76,6 @@ public class OperationService implements IOperationService{
             double updateMontant = user.getCompteBancaire().getMontant() - operation.getMontant();
 
             user.getCompteBancaire().setMontant(updateMontant);
-            // add les deux personnes qui ont fait la transactions
             operationRepository.save(newOperation);
 
             return true;
