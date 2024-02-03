@@ -6,8 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Date;
+import java.util.Objects;
 
 @ControllerAdvice
 @Generated
@@ -15,25 +18,33 @@ import java.util.Date;
 public class ControllerExceptionsHandler {
 
     @ExceptionHandler(value = {NotNecessaryFundsException.class})
-    public ResponseEntity<ErrorMessage> NotNecessaryFundsException(NotNecessaryFundsException e){
+    //@ResponseStatus(HttpStatus.NOT_FOUND)
+    public String NotNecessaryFundsException(NotNecessaryFundsException e, RedirectAttributes redirectAttributes){
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.NOT_FOUND.value(),
                 new Date(),
                 e.getMessage());
         log.error(e.getMessage());
 
-        return new ResponseEntity<ErrorMessage>(message, HttpStatus.NOT_FOUND);
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+
+        return "redirect:/home";
     }
 
     @ExceptionHandler(value = {UserException.class})
-    public ResponseEntity<ErrorMessage> UserAlreadyExistException(UserException e){
+    public String UserAlreadyExistException(UserException e, RedirectAttributes redirectAttributes){
         ErrorMessage message = new ErrorMessage(
                 HttpStatus.NOT_ACCEPTABLE.value(),
                 new Date(),
                 e.getMessage());
         log.error(e.getMessage());
 
-        return new ResponseEntity<ErrorMessage>(message, HttpStatus.NOT_ACCEPTABLE);
+        redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+
+        if (Objects.equals(e.getMessage(), "This user already exists")) {
+            return "redirect:/signup";
+        }
+        return "redirect:/home";
     }
 
 }

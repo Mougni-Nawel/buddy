@@ -2,6 +2,7 @@ package com.demo.buddy.service;
 
 import com.demo.buddy.controller.exception.UserException;
 import com.demo.buddy.entity.Compte;
+import com.demo.buddy.entity.Role;
 import com.demo.buddy.entity.User;
 import com.demo.buddy.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,11 +23,15 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+/**
+ * test: save a new user, save a user that already exist, update a user, find a user.
+ * @author Mougni
+ *
+ */
 @SpringBootTest(classes = IUserService.class)
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
@@ -95,11 +100,8 @@ public class UserServiceTest {
 
         when(userRepository.findByEmail(newUser.getEmail())).thenReturn(newUser);
 
-        //when(passwordEncoder.encode(anyString())).thenReturn(anyString());
-
         // then
 
-        //userService.saveUser(newUser);
         assertThrows(UserException.class, () -> userService.saveUser(newUser));
 
         verify(passwordEncoder, times(0)).encode(anyString());
@@ -115,13 +117,11 @@ public class UserServiceTest {
     @WithMockUser(username = "user1", authorities = {"USER"})
     void testUpdateUser() {
 
-        // Mocking SecurityContext and Authentication
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
         SecurityContextHolder.setContext((org.springframework.security.core.context.SecurityContext) securityContext);
         Authentication authentication = Mockito.mock(Authentication.class);
         when(((org.springframework.security.core.context.SecurityContext) securityContext).getAuthentication()).thenReturn(authentication);
 
-        // Mocking user details
         User principalUser = new User();
         principalUser.setUserid(1);
         when(authentication.getPrincipal()).thenReturn(principalUser);
@@ -135,16 +135,47 @@ public class UserServiceTest {
 
         when(userRepository.save(user)).thenReturn(user);
 
-
-
         // then
-
 
         User result = userService.updateUser(user);
         verify(userRepository, times(1)).save(user);
-        //verify(userService, times(1)).findUser();
         assertEquals(user, result);
 
+    }
+
+
+    @Test
+    @WithMockUser(username = "user1", authorities = {"USER"})
+    void testUpdateAccount() {
+
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder.setContext((org.springframework.security.core.context.SecurityContext) securityContext);
+        Authentication authentication = Mockito.mock(Authentication.class);
+        when(((org.springframework.security.core.context.SecurityContext) securityContext).getAuthentication()).thenReturn(authentication);
+
+        User account = new User();
+        account.setUserid(12);
+        when(authentication.getPrincipal()).thenReturn(account);
+
+        Compte compte1 = new Compte(1, "SDFGHJKBV", 56.90, account);
+        account.setCompteBancaire(compte1);
+
+        User userFound = new User();
+
+        // when
+
+        when(userService.findUser()).thenReturn(userFound);
+
+        when(userRepository.save(userFound)).thenReturn(userFound);
+
+        userFound.setEmail("usertest@test.com");
+        userFound.setUserid(12);
+        userFound.setCompteBancaire(compte1);
+        userFound.getCompteBancaire().setMontant(10);
+
+        // then
+        userService.updateAccount(account);
+        verify(userRepository, times(1)).save(userFound);
     }
 
     @Test
@@ -188,20 +219,16 @@ public class UserServiceTest {
     void testFindUser() {
 
         // authentication
-        // Mock SecurityContext and Authentication
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
         SecurityContextHolder.setContext(securityContext);
         Authentication authentication = Mockito.mock(Authentication.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
 
-        // Mock user details
         when(authentication.getPrincipal()).thenReturn(user);
 
         // when
-
         when(userRepository.findById(anyInt())).thenReturn(user);
 
-        // service test
         User result = userService.findUser();
 
         // then
@@ -210,19 +237,18 @@ public class UserServiceTest {
         assertEquals(user, result);
     }
 
-    // todo add findUser of user not found
 
-   // @Test
+   @Test
     @WithMockUser(username = "user1", authorities = {"USER"})
     void testFindById() {
 
         // when
-        when(userRepository.findById(user.getUserid())).thenReturn(Optional.of(user));
+        when(userRepository.findById(anyInt())).thenReturn(user);
 
         // then
         Optional<User> result = userService.findById(user.getUserid());
 
-        verify(userRepository, times(1)).findById(user.getUserid());
+        verify(userRepository, times(1)).findById(anyInt());
 
         assertEquals(Optional.of(user), result);
     }
@@ -242,5 +268,33 @@ public class UserServiceTest {
         assertEquals(user, result);
 
     }
+
+    @Test
+    @WithMockUser(username = "user1", authorities = {"USER"})
+    void testGetUserId() {
+
+        // authentication
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder.setContext(securityContext);
+        Authentication authentication = Mockito.mock(Authentication.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+
+        user.setRole(Role.USER);
+        when(authentication.getPrincipal()).thenReturn(user);
+
+
+        int userId = user.getUserid();
+
+        int result = userService.getUserId();
+
+        verify(authentication, times(4)).getPrincipal();
+
+        assertEquals(userId, result);
+
+    }
+
+
+
+
 
 }

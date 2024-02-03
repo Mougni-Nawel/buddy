@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.Date;
 import jakarta.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 
 
 @Entity
@@ -23,11 +24,10 @@ public class Operation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer numeroTransaction;
     private Date date;
     private double montant;
+    private double commission;
 
     public Operation() {
 

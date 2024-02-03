@@ -1,5 +1,6 @@
 package com.demo.buddy.controller;
 
+import com.demo.buddy.controller.exception.UserException;
 import com.demo.buddy.entity.User;
 import com.demo.buddy.repository.UserRepository;
 import com.demo.buddy.service.*;
@@ -19,6 +20,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * methods related to the controller of ami
+ * @author Mougni
+ *
+ */
 @Controller
 public class AmisController {
 
@@ -29,6 +35,10 @@ public class AmisController {
     IUserService userService;
 
 
+    /**
+     * this method get the view to add a friend
+     * @return the view.
+     */
     @GetMapping("/addFriend")
     public String getAddFriend(Model model){
         model.addAttribute("user", new User());
@@ -42,20 +52,27 @@ public class AmisController {
 
 
 
+    /**
+     * this method add a friend from the route /addFriend
+     * @param user represents the user that has to be added as a friend.
+     * @return the view home.
+     */
     @PostMapping("/addFriend")
-    public String addFriend(@ModelAttribute User user, Model model, RedirectAttributes redirect){
+    public String addFriend(@ModelAttribute User user) throws UserException {
 
 
         User userFind = userService.findUserByEmail(user.getEmail());
-        //Optional<Amis> findAmi =  amisService.findAmiById(userFind.getUserid());
         amisService.addFriend(userFind, userService.findUser());
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/home");
-        return "home";
+        return "redirect:/home";
 
     }
 
+    /**
+     * this method get the view that shows all the friends by the route /getFriend
+     * @param model is used has a parameter to pass to the view all the friends infos.
+     * @return the view getFriend.
+     */
     @GetMapping("/getFriend")
     public String getFriends(Model model){
 

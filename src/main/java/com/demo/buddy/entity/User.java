@@ -2,6 +2,8 @@ package com.demo.buddy.entity;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Generated;
 import lombok.Getter;
@@ -32,24 +34,20 @@ public class User implements UserDetails {
 
     private String lastname;
 
+    private String username;
+
+    //@NotNull
+    @Email
     @Column(unique = true)
     private String email;
 
     private String mdp;
 
-    //private String compteBancaire;
-
-    private String role;
+    private Role role;
 
     public User() {
 
     }
-
-
-
-    //@OneToOne
-    //@JoinColumn(name = "compte")
-    //private Compte compteLocal;
 
     @Override
     public String toString() {
@@ -96,7 +94,7 @@ public class User implements UserDetails {
 
     @Getter
     @OneToMany(mappedBy = "user")
-    private Collection<Contact> contact;
+    private Collection<Amis> contact;
 
     @OneToMany(mappedBy = "user")
     private Collection<Operation> operation;
@@ -104,6 +102,8 @@ public class User implements UserDetails {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "compte_id")
     private Compte compteBancaire;
+
+
 
 
 }

@@ -14,6 +14,11 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * methods related to operation that are implemented from operation interface.
+ * @author Mougni
+ *
+ */
 @Service
 @Transactional
 public class OperationService implements IOperationService{
@@ -23,17 +28,30 @@ public class OperationService implements IOperationService{
 
     static final double commission = 5;
 
+
     public List<Operation> findAll(){
 
         return operationRepository.findAll();
 
     }
 
+    /**
+     * this method get all the transactions that had been made by the user that is put in parameter.
+     * @param user represents the id of a user of who we want to get all the transactions.
+     * @return a list of transactions.
+     */
     public List<Operation> findTransactionsMadeByUser(int user){
         return operationRepository.findAllByUser(user);
     }
 
-    public boolean newOperation(Operation operation, User user, RedirectAttributes redirectAttributes) throws NotNecessaryFundsException {
+    /**
+     * this method create a new transaction that is put in parameter.
+     * @param operation represents the transaction that we want to save.
+     * @param user represents the user that created the transaction.
+     * @return boolean.
+     * @throws NotNecessaryFundsException if the amount of account is not enough.
+     */
+    public boolean newOperation(Operation operation, User user) throws NotNecessaryFundsException {
         if(user.getCompteBancaire().getMontant() >= operation.getMontant()){
             Date localDate = new Date();
 
@@ -43,30 +61,49 @@ public class OperationService implements IOperationService{
             newOperation.setAmi(operation.getAmi());
             newOperation.setUser(user);
 
-            double montantAfterCommission = getCommission(newOperation.getMontant());
+            int nbTransaction;
+            Integer nextTransactionNumber = operationRepository.getNextTransactionNumber();
+            if(nextTransactionNumber == null || nextTransactionNumber == 0){
+                nbTransaction = 0;
+            }else{
+                nbTransaction = nextTransactionNumber;
+            }
+            newOperation.setNumeroTransaction(nbTransaction + 1);
+
+            double montantAfterCommission = getCommission(newOperation);
 
             creditFriend(operation.getAmi(), montantAfterCommission);
             double updateMontant = user.getCompteBancaire().getMontant() - operation.getMontant();
 
             user.getCompteBancaire().setMontant(updateMontant);
-            // add les deux personnes qui ont fait la transactions
             operationRepository.save(newOperation);
 
             return true;
         }else{
-            redirectAttributes.addFlashAttribute("errorMessage", "Pas assez d'argent");
             throw new NotNecessaryFundsException("Pas assez d'argent");
-            //todo ajouter un message d'erreur et une exception
         }
 
 
     }
 
-    public double getCommission(double montant) {
-        System.out.println("COMMISSION : "+(montant * (commission / 100)));
-        return montant + (montant * (commission / 100));
+    /**
+     * this method calculate the commision that will be taken from the amount of the transaction.
+     * @param operation represents the new transaction.
+     * @return a double of the amount re calculated.
+     */
+    public double getCommission(Operation operation) {
+        System.out.println("COMMISSION : "+(operation.getMontant() * (commission / 100)));
+        operation.setCommission(operation.getMontant() * (commission / 100));
+
+        return operation.getMontant() - (operation.getMontant() * (commission / 100));
     }
 
+    /**
+     * this method add the amount of the transaction to the friend that has been put in parameter.
+     * @param user represents the friend who will receive the money.
+     * @param montant represents the amount of money that the friend will receive.
+     * @return a double that represents the amount in the account of the friend.
+     */
     public double creditFriend(User user, double montant){
         double updateMontant = user.getCompteBancaire().getMontant() + montant;
         user.getCompteBancaire().setMontant(updateMontant);

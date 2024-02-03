@@ -29,6 +29,10 @@ public class Amis {
 
     private Integer IdAmis;
 
+    @ManyToOne
+    @JoinColumn(name = "user")
+    User user;
+
     public Amis() {
 
     }

@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -27,11 +28,16 @@ import java.util.Optional;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
+/**
+ * test: get view home
+ * @author Mougni
+ *
+ */
 @AutoConfigureMockMvc
 @EnableWebMvc
-@SpringBootTest(properties = "spring.main.lazy-initialization=true",classes = HomeController.class)
+//@SpringBootTest(properties = "spring.main.lazy-initialization=true",classes = HomeController.class)
 @WithMockUser
+@WebMvcTest
 @Slf4j
 public class HomeControllerTest {
 
@@ -58,7 +64,7 @@ public class HomeControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.
                         get("/home").with(csrf()))
-                .andExpect(status().isFound());
+                .andExpect(status().isOk());
 
     }
 

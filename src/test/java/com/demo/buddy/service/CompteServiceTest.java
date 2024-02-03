@@ -17,6 +17,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import static org.mockito.Mockito.*;
 
+/**
+ * test: update an account.
+ * @author Mougni
+ *
+ */
 @SpringBootTest(classes = ICompteService.class)
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)

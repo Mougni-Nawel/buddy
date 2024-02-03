@@ -26,6 +26,11 @@ import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/**
+ * test: get commission, credit a friend's account, find all transactions made by a user, save a new transactions.
+ * @author Mougni
+ *
+ */
 @SpringBootTest(classes = IOperationService.class)
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
@@ -71,13 +76,16 @@ public class OperationServiceTest {
     @WithMockUser(username = "user1", authorities = {"USER"})
     void testGetCommission(){
 
+
         double montant = 50.00;
         int commission = 5;
 
-        double expected = montant + (montant * ((double) commission / 100));
+        operation.setMontant(montant);
+
+        double expected = montant - (montant * ((double) commission / 100));
 
         // then
-        Assertions.assertEquals(expected, operationService.getCommission(montant));
+        Assertions.assertEquals(expected, operationService.getCommission(operation));
 
     }
 
@@ -115,25 +123,19 @@ public class OperationServiceTest {
     @WithMockUser(username = "user1", authorities = {"USER"})
     void testNewOperation() throws NotNecessaryFundsException {
 
+        when(operationRepository.save(any(Operation.class))).thenReturn(operation);
+
         Date date = new Date();
 
         operation.setDate(date);
         user2.getCompteBancaire().setMontant(user.getCompteBancaire().getMontant() + 52.5);
 
         double expected = user.getCompteBancaire().getMontant() - operation.getMontant();
-        // when
 
-        when(operationService.getCommission(anyDouble())).thenReturn(Double.valueOf(52.5));
-        when(operationService.creditFriend(any(), anyDouble())).thenReturn(Double.valueOf(user.getCompteBancaire().getMontant()));
-        when(operationRepository.save(any(Operation.class))).thenReturn(operation);
-        // then
+        boolean result = operationService.newOperation(operation, user);
 
-        boolean result = operationService.newOperation(operation, user, any(RedirectAttributes.class));
+        Assertions.assertTrue(result);
 
-        Assertions.assertTrue(true, String.valueOf(result));
-
-        verify(operationService).getCommission(operation.getMontant());
-        verify(operationService).creditFriend(operation.getAmi(), 52.5);
         verify(operationRepository).save(any(Operation.class));
     }
 

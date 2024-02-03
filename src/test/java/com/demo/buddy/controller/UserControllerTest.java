@@ -1,5 +1,6 @@
 package com.demo.buddy.controller;
 
+import com.demo.buddy.entity.Role;
 import com.demo.buddy.entity.User;
 import com.demo.buddy.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -21,9 +23,14 @@ import static org.mockito.Mockito.doThrow;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * test: register a user, show view
+ * @author Mougni
+ *
+ */
 @AutoConfigureMockMvc
 @EnableWebMvc
-@SpringBootTest(classes = UserController.class)
+@WebMvcTest
 @WithMockUser
 @Slf4j
 public class UserControllerTest {
@@ -35,6 +42,12 @@ public class UserControllerTest {
 
     @MockBean
     private IUserService userService;
+
+    @MockBean
+    private IAmisService amisService;
+
+    @MockBean
+    private IOperationService operationService;
 
     @BeforeEach
     public void setUpPerTest(){
@@ -50,21 +63,14 @@ public class UserControllerTest {
         user.setMdp("mdp10203");
         user.setFirstname("Test");
         user.setLastname("Test");
-        user.setRole("USER");
+        user.setRole(Role.USER);
 
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/signup").with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(user))
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
-
-        //Mockito.when(passwordEncoder.encode(user.getPassword())).thenReturn(user.getPassword());
-
-        //userService.saveUser(user);
-
-        //Mockito.verify(passwordEncoder, Mockito.times(1)).encode(user.getPassword());
-        //Mockito.verify(userRepository, Mockito.times(1)).save(any(User.class));
+                .andExpect(status().isOk());
     }
 
     // get a signup page
@@ -77,47 +83,6 @@ public class UserControllerTest {
                 .andExpect(status().isFound());
 
     }
-
-
-    // bad signup
-//    @Test
-//    @WithMockUser(username = "spring", password = "secret")
-//    public void givenUserThatExist_whenUserSignup_then404IsReceived() throws Exception {
-//        setUpPerTest();
-//
-//        User userExist = new User();
-//        userExist.setEmail("test1@test.com");
-//        userExist.setMdp("mdp10203");
-//        userExist.setFirstname("Test");
-//        userExist.setLastname("Test");
-//        userExist.setRole("USER");
-//
-//
-//
-//        user.setEmail("test1@test.com");
-//        user.setMdp("mdp10203");
-//        user.setFirstname("Test");
-//        user.setLastname("Test");
-//        user.setRole("USER");
-//
-//        //doThrow(ChangeSetPersister.NotFoundException.class).when(userService).saveUser(any(User.class));
-//        //doThrow(new UserAlreadyExistException("This user already exists")).when(userService).saveUser(any(User.class));
-//
-//        UserService userService = Mockito.mock(UserService.class);
-//        Mockito.doThrow(new UserAlreadyExistException("This user already exists"))
-//                .when(userService)
-//                .saveUser(user);
-//
-//        mockMvc.perform(MockMvcRequestBuilders
-//                        .post("/signup").with(csrf())
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(asJsonString(user))
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isNotAcceptable());
-//    }
-
-
-    // redirection pour la page signups
 
 
     public static String asJsonString(final Object obj) {

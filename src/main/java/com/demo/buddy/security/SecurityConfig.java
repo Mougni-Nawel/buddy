@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -31,37 +32,27 @@ public class SecurityConfig {
                         .requestMatchers("/signup").permitAll()
                         .requestMatchers("/login/*").anonymous()
                         .anyRequest().permitAll())
-                .formLogin(form -> {
-                            try {
-                                form
-                                        .loginPage("/login")
-                                        .usernameParameter("email")
-                                        .passwordParameter("mdp")
-                                        .defaultSuccessUrl("/home", true)
-                                        .failureUrl("/login?error")
-                                        .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error")
-                                        );
-                                        //.and()
-                                        //.oauth2Login()
-                                            //  .loginPage("/login/github")
-                                        //.redirectionEndpoint()
-                                        //.baseUri("/login/oauth2/callback/*");
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-
+                .formLogin(form -> form
+                        .loginPage("/login")
+                        .usernameParameter("email")
+                        .passwordParameter("mdp")
+                        .defaultSuccessUrl("/home", true)
+                        .failureUrl("/login?error")
+                        .failureHandler(new SimpleUrlAuthenticationFailureHandler("/login?error"))
                 )
-                //.oauth2Login()
-
-                .logout((logout) ->
-                        logout.logoutUrl("/logout")
-                                .deleteCookies("remove")
-                                .logoutSuccessUrl("/login")
-                                .invalidateHttpSession(true)
-                                .clearAuthentication(true)
-                                .permitAll())
-
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login/github")
+                        .redirectionEndpoint()
+                        .baseUri("/login/oauth2/code/*")
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .deleteCookies("remove")
+                        .logoutSuccessUrl("/login")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .permitAll()
+                )
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
 

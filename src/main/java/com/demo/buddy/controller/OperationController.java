@@ -10,8 +10,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
+ * methods related to the controller of operation
+ * @author Mougni
+ *
+ */
 @Controller
 public class OperationController {
 
@@ -21,18 +27,18 @@ public class OperationController {
     @Autowired
     IOperationService operationService;
 
-    @ResponseStatus(HttpStatus.CREATED)
+    /**
+     * this method create a new transaction from the path /newTransaction
+     * @param operation represent the operation that has to be created.
+     * @return the view home.
+     */
+    //@ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/newTransaction")
-    public String newTransaction(@ModelAttribute Operation operation, RedirectAttributes redirectAttributes) throws NotNecessaryFundsException {
+    public String newTransaction(@ModelAttribute Operation operation) throws NotNecessaryFundsException {
 
-        //System.out.println("DESTINATAIRE DE L'OPERATION : " + operation.getAmi().getUserid());
-        operationService.newOperation(operation, userService.findUser(), redirectAttributes);
+        operationService.newOperation(operation, userService.findUser());
 
-        //return "redirect:/home";
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/home");
-        //return new ResponseEntity<>("Operation created successfully", headers, HttpStatus.CREATED);
-        return "home";
+        return "redirect:/home";
     }
 
 

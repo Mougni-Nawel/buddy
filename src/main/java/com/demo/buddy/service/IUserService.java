@@ -25,4 +25,11 @@ public interface IUserService {
     User findUser();
 
     void updateAccount(User account);
+
+    User findUserGit(String username);
+
+    User saveUserGit(String username);
+
+    int getUserId();
+
 }

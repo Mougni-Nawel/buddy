@@ -1,12 +1,14 @@
 package com.demo.buddy.controller;
 
 import com.demo.buddy.entity.Amis;
+import com.demo.buddy.entity.Role;
 import com.demo.buddy.entity.User;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
 import com.demo.buddy.service.IAmisService;
+import com.demo.buddy.service.IOperationService;
 import com.demo.buddy.service.IUserService;
 import com.demo.buddy.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,15 +30,22 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+/**
+ * test: get friend and save friend.
+ * @author Mougni
+ *
+ */
 @AutoConfigureMockMvc
 @EnableWebMvc
-@SpringBootTest(properties = "spring.main.lazy-initialization=true",classes = AmisController.class)
+@WebMvcTest
 @WithMockUser
 @Slf4j
 public class AmisControllerTest {
@@ -48,6 +57,10 @@ public class AmisControllerTest {
 
     @MockBean
     private IUserService userService;
+
+    @MockBean
+    private IOperationService operationService;
+
 
     @MockBean
     private IAmisService amisService;
@@ -66,7 +79,7 @@ public class AmisControllerTest {
         user.setMdp("mdp10203");
         user.setFirstname("Test");
         user.setLastname("Test");
-        user.setRole("USER");
+        user.setRole(Role.USER);
 
         Mockito.when(userService.findUserByEmail(user.getEmail())).thenReturn(user).toString();
         Mockito.when(amisService.addFriend(any(User.class), any(User.class))).thenReturn(true);
@@ -79,7 +92,7 @@ public class AmisControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user))
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isFound());
     }
 
 // get addfriend
@@ -89,7 +102,7 @@ public class AmisControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.
                         get("/addFriend").with(csrf()))
-                .andExpect(status().isFound());
+                .andExpect(status().isOk());
 
     }
 
@@ -101,7 +114,7 @@ public class AmisControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.
                         get("/getFriend").with(csrf()))
-                .andExpect(status().isFound());
+                .andExpect(status().isOk());
 
     }
 
