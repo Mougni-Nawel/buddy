@@ -1,8 +1,11 @@
 package com.demo.buddy.service;
 
 import com.demo.buddy.controller.exception.NotNecessaryFundsException;
+import com.demo.buddy.controller.exception.UserException;
+import com.demo.buddy.entity.Compte;
 import com.demo.buddy.entity.Operation;
 import com.demo.buddy.entity.User;
+import com.demo.buddy.repository.CompteRepository;
 import com.demo.buddy.repository.OperationRepository;
 import com.demo.buddy.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * methods related to operation that are implemented from operation interface.
@@ -24,7 +29,8 @@ import java.util.List;
 public class OperationService implements IOperationService{
 
     @Autowired
-    OperationRepository operationRepository;
+    private OperationRepository operationRepository;
+
 
     static final double commission = 5;
 
@@ -109,5 +115,6 @@ public class OperationService implements IOperationService{
         user.getCompteBancaire().setMontant(updateMontant);
         return user.getCompteBancaire().getMontant();
     }
+
 
 }

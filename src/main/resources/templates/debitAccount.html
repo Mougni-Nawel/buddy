@@ -80,7 +80,7 @@
             width: 40%;
             border: 2px solid;
             background-color: #f2f2f2;
-            height: 90%;
+            height: 25em;
 
 
         }
@@ -147,33 +147,22 @@
     </div>
 </div>
 <div id="info">
-    <form method="post" th:action="@{/updateUserInfo}" th:object="${user}">
-        <h1 th:text="'User infos: ' + ${user.compteBancaire.montant} + '€'" style="text-align: center; color: black; margin-top: 20px; margin-bottom: 20px;">User infos : </h1>
-
-
-        <div style="margin-left: auto; margin-right: auto; width: 50%; text-align: left;">
-
-            <label style="margin-left: 0;">Nom:</label>
-            <input type="text" th:value="*{lastname}" th:field="*{lastname}" style="width: 100%;"/><br/>
-
-            <label style="margin-left: 0;">Prénom:</label>
-            <input type="text" th:value="*{firstname}" th:field="*{firstname}" style="width: 100%;"/><br/>
-
-            <label style="margin-left: 0;">Compte bancaire :</label>
-            <input type="text" th:field="*{compteBancaire.coordonneesBancaire}" th:value="*{compteBancaire.getCoordonneesBancaire()}" style="width: 100%;"/><br/>
-
-            <label style="margin-left: 0;">E-mail:</label>
-            <input type="text" th:value="*{email}" th:field="*{email}" style="width: 100%;"/><br/>
+    <div class="col-12 mb-3">
+        <div th:if="${errorMessage}" class="mt-2 alert alert-danger text-center">
+            <label th:text="${errorMessage}"></label>
         </div>
-</br>
-        <button type="submit" id="button" class="btn btn-lg" style="background-color: #6cbc56; color:white; margin-top: 6.85em;">Update</button>
+    </div>
+    <h1 style="text-align: center; color: black; margin-top: 20px; margin-bottom: 20px;">Débiter mon compte : </h1>
+    <form method="post" th:action="@{/debitAccount}" th:object="${amount}">
+        <div style="margin-left: auto; margin-right: auto; width: 50%; text-align: left;">
+            </br>
+            <label style="margin-left: 0;">Montant :</label>
+            <input type="number" id="amount" step="0.01" th:field="*{amount}" style="width: 100%;" /><br/>
+
+        </div>
+        <button type="submit" id="button" class="btn btn-lg" style="background-color: #6cbc56; color:white; margin-top:4em;">Valider</button>
     </form>
 
-            <h3 class="pt-3 font-weight-bold"><a class="btn btn-lg" style="background-color: #3498db; color:white; margin-left: 25%; margin-top: 4em;" href="/updateAccount">Créditer mon compte</a></h3>
-            <h3 class="pt-3 font-weight-bold"><a class="btn btn-lg" style="background-color: #3498db; color:white; margin-left: 25%; margin-top: 4em;" href="/debitAccount">Débiter mon compte</a></h3>
-
 </div>
-
-
 </body>
 </html>
