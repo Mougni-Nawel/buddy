@@ -1,13 +1,16 @@
 package com.demo.buddy.controller;
 
+import com.demo.buddy.controller.exception.NotNecessaryFundsException;
+import com.demo.buddy.controller.exception.UserException;
+import com.demo.buddy.dto.Amount;
 import com.demo.buddy.entity.User;
+import com.demo.buddy.service.ICompteService;
+import com.demo.buddy.service.IOperationService;
 import com.demo.buddy.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * methods related to the controller of compte
@@ -19,6 +22,12 @@ public class CompteController {
 
     @Autowired
     IUserService userService;
+
+    @Autowired
+    IOperationService operationService;
+
+    @Autowired
+    ICompteService compteService;
 
     /**
      * this method update the info of the user from the path /updateUserInfo
@@ -69,6 +78,21 @@ public class CompteController {
 
     }
 
+    /**
+     * this method get the view debitAccount from the path /debitAccount
+     * @param model is used as a parameter to pass to the view amount to debit account.
+     * @return the view debitAccount.
+     */
+    @GetMapping("/debitAccount")
+    public String getDebitAccount(Model model) {
+
+        model.addAttribute("amount", new Amount());
+
+        return "debitAccount";
+
+
+    }
+
 
     /**
      * this method update the info of the account of a user from the path /updateAccount
@@ -79,6 +103,22 @@ public class CompteController {
     public String updateAccount(@ModelAttribute("user") User user){
 
         userService.updateAccount(user);
+
+        return "redirect:/home";
+
+
+    }
+
+
+    /**
+     * this method debit the account of a user from the path /debitAccount
+     * @param amount represent the amount that has to be debited.
+     * @return the view home.
+     */
+    @PostMapping("/debitAccount")
+    public String debitAccount(@ModelAttribute Amount amount) throws NotNecessaryFundsException, UserException {
+
+        compteService.debitAccount(amount.getAmount());
 
         return "redirect:/home";
 

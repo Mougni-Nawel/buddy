@@ -1,6 +1,7 @@
 package com.demo.buddy.service;
 
 import com.demo.buddy.controller.exception.NotNecessaryFundsException;
+import com.demo.buddy.controller.exception.UserException;
 import com.demo.buddy.entity.Operation;
 import com.demo.buddy.entity.User;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -16,5 +17,7 @@ public interface IOperationService {
     double getCommission(Operation operation);
 
     double creditFriend(User user, double montant);
+
+
 
 }
